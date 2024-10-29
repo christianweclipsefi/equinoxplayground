@@ -175,12 +175,17 @@ def main():
         st.write(f"Amount out: {amount_out:.2f}")
         st.write(f"Price: {(amount_out/amount_in if amount_in else 0):.5f}")
         
-        # Plot the curve
+        # Plot the curve with improved formatting
         x = np.linspace(0, simulator.sum_max_pool_values(), 1000)
         y = [simulator.calculate_swap(float(x_val))[0] for x_val in x]
         
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(x, y)
+        
+        # Format axis labels to show millions
+        ax.xaxis.set_major_formatter(lambda x, p: f'{int(x/1e6)}M')
+        ax.yaxis.set_major_formatter(lambda x, p: f'{int(x/1e6)}M')
+        
         ax.set_xlabel("Amount In")
         ax.set_ylabel("Amount Out")
         ax.set_title("StableSwap Curve")
@@ -189,6 +194,9 @@ def main():
         if amount_in > 0:
             ax.scatter([amount_in], [amount_out], color='red')
             
+        # Adjust layout to prevent label cutoff
+        plt.tight_layout()
+        
         st.pyplot(fig)
 
 if __name__ == "__main__":
